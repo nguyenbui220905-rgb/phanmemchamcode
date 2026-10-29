@@ -15,16 +15,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmysqlclient-dev default-libmysqlclient-dev \
     # lupa (Python-Lua bridge in requirements.txt)
     liblua5.4-dev \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
+    && apt-get install -y nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 
 # CSS build tools (exact from README)
-RUN npm install -g sass postcss-cli postcss autoprefixer --silent
+RUN npm install -g sass@1.32.13 postcss-cli@8.3.1 postcss@8.3.11 autoprefixer@10.4.2 --silent
 
 WORKDIR /code
 
 # Python deps — cached layer, only rebuilds when requirements.txt changes
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt mysqlclient
 
